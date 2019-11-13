@@ -1,0 +1,21 @@
+clc; clear; close all;
+
+%variables
+P = sdpvar(2);
+Q = sdpvar(2);
+R = sdpvar(2,2);
+
+%Data available
+A = [1 2;
+     2 4];
+B = [1 0;0 2];
+N = [3 2; 0 0];
+ 
+%LMIs
+LMI1 = [A'*P+P*A+Q P*B+N';
+       (P*B+N')'  R ] >= 0;
+LMIs = [ P > 0, Q >= 0, R >0, LMI1];
+optimize (LMIs)
+
+%Result
+value(P)
