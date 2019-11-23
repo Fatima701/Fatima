@@ -1,0 +1,24 @@
+clear all;
+clc;
+close all;
+
+%% Data
+A = [1 2 3;
+    0 1 4;
+    1 2 2];
+M = [1 2 3;0 1 1;2 0 1];
+N = [1 0 0;0 0 0; 0 0 1];
+
+%% LMI
+P = sdpvar(3,3);
+eps = 0.00001;
+
+LMI1 = P >0;
+LMI2 = P*N.*A.*M + M'.*A'.*N'.*P < eps*eye(3);
+
+optimize([LMI1,LMI2],[])
+
+value(N);
+value(M);
+%% zeros
+eig(value(N)*A*value(M))
