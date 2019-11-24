@@ -1,0 +1,23 @@
+clear all;
+clc;
+close all;
+
+%% Data
+A = [1 2 3;
+    0 1 4;
+    1 2 2];
+B = [1 2 ;0 1 ;2 0];
+C = [1 0 0; 0 0 1];
+D = [1 1;1 1];
+
+%% LMI
+P = sdpvar(3,3);
+eps = 0.00001;
+
+LMI1 = P >0;
+LMI2 = P.*(A-B*((D'*D).^-1)*D'*C)+ (A-B*((D'*D).^-1)*D'*C)'*P < eps*eye(3);
+
+optimize([LMI1,LMI2],[])
+
+%% zeros
+eig((A-B*((D'*D).^-1)*D'*C))
