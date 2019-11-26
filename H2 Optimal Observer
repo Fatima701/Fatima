@@ -19,7 +19,7 @@ Z = sdpvar(2,2);
 G = sdpvar(5,2);
 mu = sdpvar(1,1);
 
-LMI1 = [P*A+A'*P-G*C2-C2'*G' P*B1-G*D21
+LMI1 = [P*A+A'*P-G*C2-C2'*G' P*B1-G*D21;
         (P*B1-G*D21)' -1*eye(2)] < 0;
 LMI2 = (trace(Z)) < mu;
 optimize([LMI1, LMI2], [])
