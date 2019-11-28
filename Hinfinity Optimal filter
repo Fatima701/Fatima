@@ -1,0 +1,37 @@
+clear all;
+clc;
+close all;
+%%data 
+
+A = [-1.3410  0.9933 0  -0.1689 -0.2518;...
+     43.2230 -0.8693 0 -17.2510 -1.5766;...
+      1.3410  0.0067 0   0.1689  0.2518;...
+         0      0    0 -20.0000   0;...
+         0      0    0    0     -20.0000];
+B1 = [0 0; 0 0; 0 0; 20 0; 0 20];
+C2 = [1 0 0 0 0;...
+     0 0 1 0 0];
+C1 = [1 0 0 0 0; 0 0 0 0 0];
+D11 = [1 0;0 0];
+D21 = 0;
+
+%% LMIs
+nx = 5; ny = 2; nz = 2;
+Y = sdpvar(nx,nx);
+Z = sdpvar(nz,nz);
+X = sdpvar(nx,nx);
+An = sdpvar(nx,nx,'full');
+Bn = sdpvar(nx,ny,'full');
+Cf = sdpvar(nz,nx,'full');
+Df = sdpvar(nz,ny,'full');
+nu = sdpvar(1,1,'full');
+
+LMI1 = [Y*A+A'*Y+Bn*C2+C2'*Bn', An+C2'*Bn'+A'*X,   Y*B1+Bn*D21, C1'-C2'*Df';
+          (A+C2'*Bn'+A'*X)',         An+An',       X*B1+Bn*D21, -Cf';
+            (Y*B1+Bn*D21)'       (X*B1+Bn*D21)'     -eye(2) D11'-D21'*Df';
+            (C1'-C2'*Df')', -Cf,(D11'-D21'*Df')',   -eye(2)] <= 0;
+LMI2 = Y-X >= 0;
+optimize([LMI1,LMI2],[])
+%% solution
+Af = value(An) \ value (X)
+Bf = value(Bn) \ value (X)
