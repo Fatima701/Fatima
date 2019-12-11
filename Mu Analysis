@@ -1,0 +1,18 @@
+clear all;
+clc;
+close all;
+%%data 
+
+A = [1 2; 2 3];
+D =[1 1; 0 1];
+
+%% LMIs
+
+X = sdpvar(2,2);
+gamma=sdpvar(1,1);
+eps=1e-2;
+
+LMI1 = A'*X*A - gamma^2*X < -eps*eye(2);       
+optimize(LMI1,[])
+%% solution
+value(X)
